@@ -3,6 +3,8 @@
 -export([set/3,
          get/2,
          get/3,
+         deadline/2,
+         done/1,
          with_value/2,
          with_values/1,
          with_deadline/1,
@@ -12,7 +14,7 @@
 
 -type ctx() :: #{values := #{term() => term()},
 
-                 deadline => {integer(), integer()}}.
+                 deadline => {timer:time(), timer:time()} | infinity}.
 
 -spec set(ctx(), term(), term()) -> ctx().
 set(Ctx=#{values := Values}, Key, Value) ->
@@ -41,8 +43,23 @@ with_deadline(Deadline) ->
 
 -spec with_deadline_after(integer(), erlang:time_unit()) -> ctx().
 with_deadline_after(After, Unit) ->
+    with_deadline_after(#{values => #{}}, After, Unit).
+
+-spec with_deadline_after(ctx(), integer(), erlang:time_unit()) -> ctx().
+with_deadline_after(Ctx, After, Unit) ->
+    Ctx#{deadline => deadline(After, Unit)}.
+
+done(#{deadline := {Deadline, _}}) ->
+    erlang:monotonic_time() =< Deadline;
+done(_) ->
+    false.
+
+%% internal
+
+deadline(After, Unit) ->
     Offset = erlang:time_offset(),
     ConvertedTime = erlang:convert_time_unit(After, Unit, native),
-    Deadline = erlang:monotonic_time() + ConvertedTime,
-    #{values => #{},
-      deadline => {Deadline, Offset}}.
+    {erlang:monotonic_time() + ConvertedTime, Offset}.
+
+%% start_deadline_timer(Time) ->
+%%     erlang:start_timer(Time, self(), deadline_reached).
