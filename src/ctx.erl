@@ -3,6 +3,7 @@
 -export([set/3,
          get/2,
          get/3,
+         background/0,
          deadline/2,
          done/1,
          with_value/2,
@@ -15,6 +16,10 @@
 -type ctx() :: #{values := #{term() => term()},
 
                  deadline => {timer:time(), timer:time()} | infinity}.
+
+-spec background() -> ctx().
+background() ->
+    #{values => #{}}.
 
 -spec set(ctx(), term(), term()) -> ctx().
 set(Ctx=#{values := Values}, Key, Value) ->
