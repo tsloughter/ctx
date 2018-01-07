@@ -9,7 +9,8 @@
          with_value/2,
          with_values/1,
          with_deadline/1,
-         with_deadline_after/2]).
+         with_deadline_after/2,
+         with_deadline_after/3]).
 
 -export_type([ctx/0]).
 
