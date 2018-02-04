@@ -7,55 +7,60 @@
          deadline/2,
          done/1,
          with_value/2,
+         with_value/3,
          with_values/1,
          with_deadline/1,
          with_deadline_after/2,
          with_deadline_after/3]).
 
--export_type([ctx/0]).
+-export_type([t/0]).
 
--type ctx() :: #{values := #{term() => term()},
+-record(ctx, {values :: #{term() => term()},
+              deadline :: {timer:time(), timer:time()} | infinity}).
+-type t() :: #ctx{}.
 
-                 deadline => {timer:time(), timer:time()} | infinity}.
-
--spec background() -> ctx().
+-spec background() -> t().
 background() ->
-    #{values => #{}}.
+    #ctx{values=#{}}.
 
--spec set(ctx(), term(), term()) -> ctx().
-set(Ctx=#{values := Values}, Key, Value) ->
-    Ctx#{values => maps:put(Key, Value, Values)}.
+-spec set(t(), term(), term()) -> t().
+set(Ctx=#ctx{values=Values}, Key, Value) ->
+    Ctx#ctx{values=maps:put(Key, Value, Values)}.
 
--spec get(ctx(), term()) -> ctx().
-get(#{values := Values}, Key) ->
+-spec get(t(), term()) -> t().
+get(#ctx{values=Values}, Key) ->
     maps:get(Key, Values).
 
--spec get(ctx(), term(), term()) -> term().
-get(#{values := Values}, Key, Default) ->
+-spec get(t(), term(), term()) -> term().
+get(#ctx{values=Values}, Key, Default) ->
     maps:get(Key, Values, Default).
 
--spec with_value(term(), term()) -> ctx().
+-spec with_value(t(), term(), term()) -> t().
+with_value(Ctx=#ctx{values=Values}, Key, Value) ->
+    Ctx#ctx{values=maps:put(Key, Value, Values)}.
+
+-spec with_value(term(), term()) -> t().
 with_value(Key, Value) ->
-    #{values => #{Key => Value}}.
+    #ctx{values=#{Key => Value}}.
 
--spec with_values(#{term() => term()}) -> ctx().
+-spec with_values(#{term() => term()}) -> t().
 with_values(Values) ->
-    #{values => Values}.
+    #ctx{values=Values}.
 
--spec with_deadline(integer()) -> ctx().
+-spec with_deadline(integer()) -> t().
 with_deadline(Deadline) ->
-    #{values => #{},
-      deadline => Deadline}.
+    #ctx{values=#{},
+      deadline=Deadline}.
 
--spec with_deadline_after(integer(), erlang:time_unit()) -> ctx().
+-spec with_deadline_after(integer(), erlang:time_unit()) -> t().
 with_deadline_after(After, Unit) ->
-    with_deadline_after(#{values => #{}}, After, Unit).
+    with_deadline_after(#ctx{values=#{}}, After, Unit).
 
--spec with_deadline_after(ctx(), integer(), erlang:time_unit()) -> ctx().
+-spec with_deadline_after(t(), integer(), erlang:time_unit()) -> t().
 with_deadline_after(Ctx, After, Unit) ->
-    Ctx#{deadline => deadline(After, Unit)}.
+    Ctx#ctx{deadline=deadline(After, Unit)}.
 
-done(#{deadline := {Deadline, _}}) ->
+done(#ctx{deadline={Deadline, _}}) ->
     erlang:monotonic_time() =< Deadline;
 done(_) ->
     false.
