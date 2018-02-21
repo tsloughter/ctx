@@ -1,6 +1,6 @@
 {application,ctx,
              [{description,"Context carries request scoped values and deadlines"},
-              {vsn,"0.4.0"},
+              {vsn,"0.4.1"},
               {registered,[]},
               {applications,[kernel,stdlib]},
               {env,[]},
