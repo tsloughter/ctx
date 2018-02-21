@@ -3,6 +3,7 @@
 -export([set/3,
          get/2,
          get/3,
+         new/0,
          background/0,
          deadline/2,
          done/1,
@@ -18,6 +19,10 @@
 -record(ctx, {values :: #{term() => term()},
               deadline :: {timer:time(), timer:time()} | infinity}).
 -type t() :: #ctx{}.
+
+-spec new() -> t().
+new() ->
+    #ctx{values=#{}}.
 
 -spec background() -> t().
 background() ->
