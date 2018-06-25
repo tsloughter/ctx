@@ -5,6 +5,7 @@
          get/3,
          new/0,
          background/0,
+         deadline/1,
          deadline/2,
          done/1,
          with_value/2,
@@ -17,7 +18,7 @@
 -export_type([t/0]).
 
 -record(ctx, {values :: #{term() => term()},
-              deadline :: {timer:time(), timer:time()} | infinity}).
+              deadline :: {timer:time(), timer:time()} | infinity | undefined}).
 -type t() :: #ctx{}.
 
 -spec new() -> t().
@@ -55,7 +56,7 @@ with_values(Values) ->
 -spec with_deadline(integer()) -> t().
 with_deadline(Deadline) ->
     #ctx{values=#{},
-      deadline=Deadline}.
+         deadline=Deadline}.
 
 -spec with_deadline_after(integer(), erlang:time_unit()) -> t().
 with_deadline_after(After, Unit) ->
@@ -64,6 +65,10 @@ with_deadline_after(After, Unit) ->
 -spec with_deadline_after(t(), integer(), erlang:time_unit()) -> t().
 with_deadline_after(Ctx, After, Unit) ->
     Ctx#ctx{deadline=deadline(After, Unit)}.
+
+-spec deadline(t()) -> {integer(), integer()}.
+deadline(#ctx{deadline=Deadline}) ->
+    Deadline.
 
 done(#ctx{deadline={Deadline, _}}) ->
     erlang:monotonic_time() =< Deadline;
