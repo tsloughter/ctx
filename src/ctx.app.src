@@ -1,6 +1,6 @@
 {application,ctx,
              [{description,"Context carries request scoped values and deadlines"},
-              {vsn,"0.4.1"},
+              {vsn,"git"},
               {registered,[]},
               {applications,[kernel,stdlib]},
               {env,[]},
