@@ -66,7 +66,7 @@ with_deadline_after(After, Unit) ->
 with_deadline_after(Ctx, After, Unit) ->
     Ctx#ctx{deadline=deadline(After, Unit)}.
 
--spec deadline(t()) -> {integer(), integer()}.
+-spec deadline(t()) -> {integer(), integer()} | undefined | infinity.
 deadline(#ctx{deadline=Deadline}) ->
     Deadline.
 
