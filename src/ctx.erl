@@ -53,7 +53,7 @@ with_value(Key, Value) ->
 with_values(Values) ->
     #ctx{values=Values}.
 
--spec with_deadline(integer()) -> t().
+-spec with_deadline({integer(), integer()} | undefined | infinity) -> t().
 with_deadline(Deadline) ->
     #ctx{values=#{},
          deadline=Deadline}.
