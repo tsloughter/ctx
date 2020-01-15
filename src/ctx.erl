@@ -70,6 +70,7 @@ with_deadline_after(Ctx, After, Unit) ->
 deadline(#ctx{deadline=Deadline}) ->
     Deadline.
 
+-spec done(t()) -> boolean().
 done(#ctx{deadline={Deadline, _}}) ->
     erlang:monotonic_time() =< Deadline;
 done(_) ->
