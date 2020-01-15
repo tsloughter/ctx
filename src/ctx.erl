@@ -33,7 +33,7 @@ background() ->
 set(Ctx=#ctx{values=Values}, Key, Value) ->
     Ctx#ctx{values=maps:put(Key, Value, Values)}.
 
--spec get(t(), term()) -> t().
+-spec get(t(), term()) -> term().
 get(#ctx{values=Values}, Key) ->
     maps:get(Key, Values).
 
