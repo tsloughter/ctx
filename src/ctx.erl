@@ -33,7 +33,7 @@ background() ->
 set(Ctx=#ctx{values=Values}, Key, Value) ->
     Ctx#ctx{values=maps:put(Key, Value, Values)}.
 
--spec get(t(), term()) -> t().
+-spec get(t(), term()) -> term().
 get(#ctx{values=Values}, Key) ->
     maps:get(Key, Values).
 
@@ -70,6 +70,7 @@ with_deadline_after(Ctx, After, Unit) ->
 deadline(#ctx{deadline=Deadline}) ->
     Deadline.
 
+-spec done(t()) -> boolean().
 done(#ctx{deadline={Deadline, _}}) ->
     erlang:monotonic_time() =< Deadline;
 done(_) ->
