@@ -72,7 +72,7 @@ deadline(#ctx{deadline=Deadline}) ->
 
 -spec done(t()) -> boolean().
 done(#ctx{deadline={Deadline, _}}) ->
-    erlang:monotonic_time() =< Deadline;
+    erlang:monotonic_time() >= Deadline;
 done(_) ->
     false.
 
