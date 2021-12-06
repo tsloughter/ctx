@@ -13,7 +13,9 @@
          with_values/1,
          with_deadline/1,
          with_deadline_after/2,
-         with_deadline_after/3]).
+         with_deadline_after/3,
+         time_to_deadline/1,
+         time_to_deadline/2]).
 
 -export_type([t/0]).
 
@@ -68,7 +70,32 @@ with_deadline_after(Ctx, After, Unit) ->
 
 -spec deadline(t()) -> {integer(), integer()} | undefined | infinity.
 deadline(#ctx{deadline=Deadline}) ->
-    Deadline.
+    Deadline;
+deadline(_) ->
+    undefined.
+
+-spec time_to_deadline(t()) -> integer() | undefined | infinity.
+time_to_deadline(Ctx) ->
+    case deadline(Ctx) of
+        undefined ->
+            undefined;
+        infinity ->
+            infinity;
+        {Deadline, _} ->
+            Deadline - erlang:monotonic_time()
+    end.
+
+-spec time_to_deadline(t(), erlang:time_unit()) -> integer() | undefined | infinity.
+time_to_deadline(Ctx, Unit) ->
+    case deadline(Ctx) of
+        undefined ->
+            undefined;
+        infinity ->
+            infinity;
+        {Deadline, _} ->
+            TTD = Deadline - erlang:monotonic_time(),
+            erlang:convert_time_unit(TTD, native, Unit)
+    end.
 
 -spec done(t()) -> boolean().
 done(#ctx{deadline={Deadline, _}}) ->
