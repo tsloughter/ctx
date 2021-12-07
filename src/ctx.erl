@@ -3,6 +3,7 @@
 -export([set/3,
          get/2,
          get/3,
+         values/1,
          new/0,
          background/0,
          deadline/1,
@@ -12,6 +13,7 @@
          with_value/3,
          with_values/1,
          with_deadline/1,
+         with_deadline/2,
          with_deadline_after/2,
          with_deadline_after/3,
          time_to_deadline/1,
@@ -43,6 +45,10 @@ get(#ctx{values=Values}, Key) ->
 get(#ctx{values=Values}, Key, Default) ->
     maps:get(Key, Values, Default).
 
+-spec values(t()) -> map().
+values(#ctx{values=Values}) ->
+    Values.
+
 -spec with_value(t(), term(), term()) -> t().
 with_value(Ctx=#ctx{values=Values}, Key, Value) ->
     Ctx#ctx{values=maps:put(Key, Value, Values)}.
@@ -60,6 +66,10 @@ with_deadline(Deadline) ->
     #ctx{values=#{},
          deadline=Deadline}.
 
+-spec with_deadline(t(), {integer(), integer()} | undefined | infinity) -> t().
+with_deadline(Ctx, Deadline) ->
+    Ctx#ctx{deadline=Deadline}.
+
 -spec with_deadline_after(integer(), erlang:time_unit()) -> t().
 with_deadline_after(After, Unit) ->
     with_deadline_after(#ctx{values=#{}}, After, Unit).
@@ -70,9 +80,7 @@ with_deadline_after(Ctx, After, Unit) ->
 
 -spec deadline(t()) -> {integer(), integer()} | undefined | infinity.
 deadline(#ctx{deadline=Deadline}) ->
-    Deadline;
-deadline(_) ->
-    undefined.
+    Deadline.
 
 -spec time_to_deadline(t()) -> integer() | undefined | infinity.
 time_to_deadline(Ctx) ->
