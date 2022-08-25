@@ -18,7 +18,7 @@
 -export_type([t/0]).
 
 -record(ctx, {values :: #{term() => term()},
-              deadline :: {timer:time(), timer:time()} | infinity | undefined}).
+              deadline :: {non_neg_integer(), non_neg_integer()} | infinity | undefined}).
 -type t() :: #ctx{}.
 
 -spec new() -> t().
