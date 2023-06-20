@@ -19,11 +19,15 @@
          time_to_deadline/1,
          time_to_deadline/2]).
 
--export_type([t/0]).
+-export_type(
+   [t/0,
+    ctx/0]).
 
 -record(ctx, {values :: #{term() => term()},
               deadline :: {non_neg_integer(), non_neg_integer()} | infinity | undefined}).
+
 -type t() :: #ctx{}.
+-type ctx() :: #ctx{}.
 
 -spec new() -> t().
 new() ->
